@@ -1,4 +1,4 @@
-package br.com.jrmantovani.rideexpress
+package br.com.jrmantovani.rideexpress.presantation.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
