@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="br.com.jrmantovani.rideexpress.presantation.ui.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_rideOptionsFragment"
+            app:destination="@id/rideOptionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rideOptionsFragment"
+        android:name="br.com.jrmantovani.rideexpress.presantation.ui.fragments.RideOptionsFragment"
+        android:label="fragment_ride_options"
+        tools:layout="@layout/fragment_ride_options" >
+        <action
+            android:id="@+id/action_rideOptionsFragment_to_rideHistoryFragment2"
+            app:destination="@id/rideHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rideHistoryFragment"
+        android:name="br.com.jrmantovani.rideexpress.presantation.ui.fragments.RideHistoryFragment"
+        android:label="fragment_ride_history"
+        tools:layout="@layout/fragment_ride_history" />
+</navigation>
