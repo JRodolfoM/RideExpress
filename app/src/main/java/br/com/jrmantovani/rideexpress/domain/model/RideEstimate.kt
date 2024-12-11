@@ -1,5 +1,9 @@
 package br.com.jrmantovani.rideexpress.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class RideEstimate(
     val latitudeOrigin: Double,
     val longitudeOrigin: Double,
@@ -10,4 +14,4 @@ data class RideEstimate(
     val motorists: List<Motorist>,
 
 
-    )
+    ): Parcelable

@@ -1,10 +1,11 @@
 package br.com.jrmantovani.rideexpress.presantation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.jrmantovani.rideexpress.core.UIStatus
 import br.com.jrmantovani.rideexpress.data.remote.model.RideEstimateRequest
+import br.com.jrmantovani.rideexpress.domain.model.RideEstimate
 import br.com.jrmantovani.rideexpress.domain.usecase.GetRideEstimateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,13 +17,11 @@ class RideEstimateViewModel @Inject constructor(
 ):ViewModel() {
 
 
-    fun getRideEstimate(rideEstimateRequest: RideEstimateRequest) {
+    fun getRideEstimate(
+        rideEstimateRequest: RideEstimateRequest,
+        uiStatus: (UIStatus<RideEstimate>)->Unit) {
        viewModelScope.launch {
-         val retorno=  getRideEstimateUseCase.getRideEstimate(rideEstimateRequest)
-
-
-           Log.i("info_teste", "getRideEstimate: $retorno")
-
+      getRideEstimateUseCase.invoke(rideEstimateRequest, uiStatus)
 
        }
 

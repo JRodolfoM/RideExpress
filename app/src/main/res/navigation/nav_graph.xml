@@ -22,6 +22,15 @@
         <action
             android:id="@+id/action_rideOptionsFragment_to_rideHistoryFragment2"
             app:destination="@id/rideHistoryFragment" />
+        <argument
+            android:name="rideEstimate"
+            app:argType="br.com.jrmantovani.rideexpress.domain.model.RideEstimate" />
+        <argument
+            android:name="origin"
+            app:argType="string" />
+        <argument
+            android:name="destination"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/rideHistoryFragment"

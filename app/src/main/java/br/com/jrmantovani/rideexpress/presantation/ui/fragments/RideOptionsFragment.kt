@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.jrmantovani.rideexpress.R
@@ -27,37 +29,7 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentRideOptionsBinding
     private lateinit var motoristAdapter: MotoristAdapter
-
-    private val motorists = listOf(
-        Motorist(
-            description = "Experienced driver",
-            id = 1,
-            name = "Alice",
-            rating = 4,
-            value = 100.0,
-            vehicle = "Sedan"
-        ),
-        Motorist(
-            description = "New driver",
-            id = 2,
-            name = "Bob",
-            rating = 2,
-            value = 50.0,
-            vehicle = "SUV"
-        ),
-        Motorist(
-            description = "Frequent commuter",
-            id = 3,
-            name = "Charlie",
-            rating = 5,
-            value = 150.0,
-            vehicle = "Motorcycle"
-        ),
-    )
-    private val places = arrayListOf(
-        Place("Av. Pres. Kenedy", LatLng( -23.5215624,  -46.763286699999995)),
-        Place("Av. Paulista", LatLng(-23.5615351, -46.6562816))
-    )
+    private val rideOptionsFragmentArgs: RideOptionsFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -65,14 +37,22 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentRideOptionsBinding.inflate(inflater, container, false)
-        initializeMotoristAdapter()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeMap()
+        initializeMotoristAdapter()
+        initializeListeners()
+    }
+
+    private fun initializeListeners() {
+        binding.btnBackRideOptions.setOnClickListener {
+            val navController = findNavController()
+
+            navController.popBackStack()
+        }
     }
 
     private fun initializeMap() {
@@ -82,8 +62,9 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initializeMotoristAdapter() {
+
         motoristAdapter = MotoristAdapter()
-        motoristAdapter.addList(motorists)
+        motoristAdapter.addList(rideOptionsFragmentArgs.rideEstimate.motorists)
 
         binding.rvMotorist.adapter = motoristAdapter
         binding.rvMotorist.layoutManager = LinearLayoutManager(
@@ -99,13 +80,18 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
 
     private fun drawRoute(googleMap: GoogleMap) {
         val boundsBuilder = LatLngBounds.Builder()
-
+        val rideEstimate = rideOptionsFragmentArgs.rideEstimate
+       val places = arrayListOf(
+            Place("Origem", LatLng(rideEstimate.latitudeOrigin ,  rideEstimate.longitudeOrigin), rideOptionsFragmentArgs.origin),
+            Place("Destino", LatLng(rideEstimate.latitudeDestination, rideEstimate.longitudeDestination), rideOptionsFragmentArgs.destination)
+        )
 
         places.forEach { place ->
             googleMap.addMarker(
                 MarkerOptions()
                     .title(place.name)
                     .position(place.latLng)
+                    .snippet(place.address)
             )
             boundsBuilder.include(place.latLng)
         }
@@ -125,8 +111,9 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
 
 }
 
-//TODO: paa teste do mapa
+
 data class Place(
     val name: String,
-    val latLng: LatLng
+    val latLng: LatLng,
+    val address: String
 )
