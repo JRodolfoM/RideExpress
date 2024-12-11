@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+
+
 }
 
 android {
@@ -17,7 +19,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
+
 
     buildTypes {
         release {
@@ -43,7 +48,8 @@ android {
 }
 
 dependencies {
-
+  //map
+    implementation(libs.play.services.maps)
 
     //Hilt
     implementation(libs.hilt.android)

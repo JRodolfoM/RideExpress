@@ -2,4 +2,9 @@
     <string name="app_name">Ride Express</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="customer_id">ID do Usuário</string>
+    <string name="origin_address">Endereço de origem</string>
+    <string name="destination_address">Endereço de destino</string>
+    <string name="ride_estimate">Estimar Viagem</string>
+    <string name="mensag_loading">Carregando...</string>
 </resources>

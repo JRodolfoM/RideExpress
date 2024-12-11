@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <TextView
+            android:id="@+id/textDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data: 2024-12-09 14:30"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+
+        <TextView
+            android:id="@+id/textDriverName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver: John Doe"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/textOrigin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Origin: 123 Main Street"
+            android:layout_marginBottom="8dp" />
+
+
+        <TextView
+            android:id="@+id/textDestination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Destination: 456 Elm Avenue"
+            android:layout_marginBottom="8dp" />
+
+
+        <TextView
+            android:id="@+id/textDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance: 15 km"
+            android:layout_marginBottom="8dp" />
+
+
+        <TextView
+            android:id="@+id/textTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: 30 mins"
+            android:layout_marginBottom="8dp" />
+
+
+        <TextView
+            android:id="@+id/textValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price: 20.00"
+
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
