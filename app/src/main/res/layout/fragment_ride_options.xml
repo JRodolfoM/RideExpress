@@ -21,10 +21,12 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/button_circle_background"
         android:contentDescription="back"
         android:padding="8dp"
-        android:src="@drawable/ic_arrow_back_24"
+        android:scaleType="center"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

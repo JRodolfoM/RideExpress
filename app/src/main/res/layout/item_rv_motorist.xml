@@ -87,19 +87,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="4dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Valor:"
-                android:layout_marginRight="8dp"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+
             <TextView
                 android:id="@+id/textValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="15.94" />
+                android:text="15.94"
+                android:textColor="#05C515"
+                android:textSize="20sp" />
 
         </LinearLayout>
 

@@ -1,20 +1,21 @@
 package br.com.jrmantovani.rideexpress.presantation.ui.adapter
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import br.com.jrmantovani.rideexpress.databinding.ItemRvMotoristBinding
+import br.com.jrmantovani.rideexpress.core.formatAsCurrency
+import br.com.jrmantovani.rideexpress.core.formatAsKilometerWithUnit
+import br.com.jrmantovani.rideexpress.core.toFormattedDate
 import br.com.jrmantovani.rideexpress.databinding.ItemRvRideBinding
-
-
-import br.com.jrmantovani.rideexpress.domain.model.Ride
+import br.com.jrmantovani.rideexpress.domain.model.RideHistory
 
 class RideAdapter(): RecyclerView.Adapter<RideAdapter.RideViewHolder>() {
 
 
-    private var listRide = emptyList<Ride>()
-    fun addList( list: List<Ride>){
+    private var listRide = emptyList<RideHistory>()
+    fun addList( list: List<RideHistory>){
         listRide = list
         notifyDataSetChanged()
     }
@@ -25,15 +26,16 @@ class RideAdapter(): RecyclerView.Adapter<RideAdapter.RideViewHolder>() {
     ) : ViewHolder(binding.root){
 
 
-        fun bind(ride: Ride){
 
-            binding.textDateTime.text = ride.date
+        fun bind(ride: RideHistory){
+
+            binding.textDateTime.text = ride.date.toFormattedDate("dd/MM/yyyy HH:mm:ss")
             binding.textDriverName.text = ride.driverName
             binding.textOrigin.text = ride.origin
             binding.textDestination.text = ride.destination
-            binding.textDistance.text = ride.distance.toString()
+            binding.textDistance.text = ride.distance.formatAsKilometerWithUnit(3)
             binding.textTime.text = ride.duration
-            binding.textValue.text = ride.value.toString()
+            binding.textValue.text = ride.value.formatAsCurrency()
 
         }
     }

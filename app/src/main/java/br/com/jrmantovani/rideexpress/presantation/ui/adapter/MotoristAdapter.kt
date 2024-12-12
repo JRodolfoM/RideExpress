@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import br.com.jrmantovani.rideexpress.core.formatAsCurrency
 import br.com.jrmantovani.rideexpress.databinding.ItemRvMotoristBinding
 import br.com.jrmantovani.rideexpress.domain.model.Motorist
 
@@ -21,17 +22,22 @@ class MotoristAdapter(
     inner class MotoristViewHolder(
         private val binding: ItemRvMotoristBinding
     ) : ViewHolder(binding.root){
-
+        private var lastClickTime: Long = 0
 
         fun bind(motorist: Motorist){
             binding.name.text = motorist.name
             binding.textDescription.text = motorist.description
             binding.textVehicle.text = motorist.vehicle
-            binding.textValue.text = motorist.value.toString()
+            binding.textValue.text = motorist.value.formatAsCurrency()
             binding.rating.rating = motorist.rating.toFloat()
 
             binding.btnChoice.setOnClickListener {
-                onClick(motorist)
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastClickTime > 1500) {
+                    lastClickTime = currentTime
+                    onClick(motorist)
+                }
+
             }
 
         }

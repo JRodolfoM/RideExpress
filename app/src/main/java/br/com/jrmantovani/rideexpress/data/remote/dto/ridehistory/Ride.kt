@@ -1,12 +1,12 @@
-package br.com.jrmantovani.rideexpress.domain.model
+package br.com.jrmantovani.rideexpress.data.remote.dto.ridehistory
 
 data class Ride(
-    val id: Int,
     val date: String,
-    val origin: String,
     val destination: String,
-    val driverName: String,
     val distance: Double,
+    val driver: Driver,
     val duration: String,
+    val id: Int,
+    val origin: String,
     val value: Double
 )

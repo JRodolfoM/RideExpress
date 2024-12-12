@@ -7,4 +7,6 @@
     <string name="destination_address">Endereço de destino</string>
     <string name="ride_estimate">Estimar Viagem</string>
     <string name="mensag_loading">Carregando...</string>
+    <string name="title_rid_history">Histórico de Viagens</string>
+    <string name="id_user_ride_history">Informe ID Usuario</string>
 </resources>

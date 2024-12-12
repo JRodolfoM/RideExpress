@@ -5,19 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import br.com.jrmantovani.rideexpress.R
 import br.com.jrmantovani.rideexpress.core.ErrorAlert
 import br.com.jrmantovani.rideexpress.core.LoadingAlert
 import br.com.jrmantovani.rideexpress.core.UIStatus
+import br.com.jrmantovani.rideexpress.core.isValid
 import br.com.jrmantovani.rideexpress.data.remote.model.RideEstimateRequest
 import br.com.jrmantovani.rideexpress.databinding.FragmentHomeBinding
 import br.com.jrmantovani.rideexpress.presantation.viewmodel.RideEstimateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -25,7 +22,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var loadingAlert: LoadingAlert
     private lateinit var errorAlert: ErrorAlert
-
+    private var lastClickTime: Long = 0
     private val rideEstimateViewModel: RideEstimateViewModel by viewModels()
 
     override fun onCreateView(
@@ -40,7 +37,19 @@ class HomeFragment : Fragment() {
 
     private fun initializeListeners() {
        binding.btnRideEstimate.setOnClickListener {
-           rideEstimate()
+           val currentTime = System.currentTimeMillis()
+           if (currentTime - lastClickTime > 1500) {
+               lastClickTime = currentTime
+               val isFieldIDValid = binding.textInputLayoutID.isValid("Informe o id do usuário")
+               val isFieldOriginValid = binding.textInputLayoutOrigin.isValid("Informe o endereço de origem")
+               val isFieldDestinationValid = binding.textInputLayoutDestination.isValid("Informe o endereço de destino")
+
+               if (isFieldIDValid && isFieldOriginValid && isFieldDestinationValid) {
+                   rideEstimate()
+               }
+
+
+           }
        }
     }
 
@@ -51,6 +60,9 @@ class HomeFragment : Fragment() {
             val origin = binding.editOrigin.text.toString()
            val destination = binding.editDestination.text.toString()
 
+//        val id = "1"
+//        val origin ="Av. Thomas Edison, 365 - Barra Funda, São Paulo - SP, 01140-000"
+//        val destination = "Av. Paulista, 1538 - Bela Vista, São Paulo - SP, 01310-200"
 
         val  rideEstimateRequest = RideEstimateRequest(
             customerId = id,

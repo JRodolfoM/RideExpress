@@ -1,61 +1,38 @@
 package br.com.jrmantovani.rideexpress.presantation.ui.fragments
 
-import android.R
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.com.jrmantovani.rideexpress.R
+import br.com.jrmantovani.rideexpress.core.ErrorAlert
+import br.com.jrmantovani.rideexpress.core.LoadingAlert
+import br.com.jrmantovani.rideexpress.core.UIStatus
+import br.com.jrmantovani.rideexpress.core.isValid
 
 import br.com.jrmantovani.rideexpress.databinding.FragmentRideHistoryBinding
-import br.com.jrmantovani.rideexpress.domain.model.Ride
-import br.com.jrmantovani.rideexpress.presantation.ui.adapter.MotoristAdapter
 import br.com.jrmantovani.rideexpress.presantation.ui.adapter.RideAdapter
+import br.com.jrmantovani.rideexpress.presantation.viewmodel.RideHistoryViewModel
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RideHistoryFragment : Fragment() {
 
 private lateinit var binding: FragmentRideHistoryBinding
-    private lateinit var rideAdapter: RideAdapter
-
-    val listRide = listOf(
-        Ride(
-            id = 1,
-            date = "2024-12-09 14:30",
-            origin = "123 Main Street",
-            destination = "456 Elm Avenue",
-            driverName = "John Doe",
-            distance = 15.0,
-            duration = "30 mins",
-            value = 20.0
-        ),
-        Ride(
-            id = 2,
-            date = "2024-12-08 10:00",
-            origin = "789 Pine Lane",
-            destination = "321 Oak Drive",
-            driverName = "Jane Smith",
-            distance = 10.5,
-            duration = "20 mins",
-            value = 15.0
-        ),
-        Ride(
-            id = 3,
-            date = "2024-12-07 18:45",
-            origin = "555 Maple Road",
-            destination = "888 Birch Boulevard",
-            driverName = "Alex Johnson",
-            distance = 25.0,
-            duration = "50 mins",
-            value = 35.0
-        )
-    )
-
+private lateinit var rideAdapter: RideAdapter
+    private lateinit var loadingAlert: LoadingAlert
+    private lateinit var errorAlert: ErrorAlert
+    private val rideHistoryViewModel: RideHistoryViewModel by viewModels()
+    private var lastClickTime: Long = 0
     private val mockDrivers = listOf("Todos", "1 - Homer Simpson", "2 - Dominic Toretto", "3 - James Bond")
 
     private lateinit var sipnerAdapter: ArrayAdapter<String>
@@ -66,15 +43,25 @@ private lateinit var binding: FragmentRideHistoryBinding
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentRideHistoryBinding.inflate(inflater, container, false)
+        initializeToolbar()
         initializeMotoristSpnerAdapter()
         initializeRideAdapter()
         initializeListeners()
         return binding.root
     }
 
+    private fun initializeToolbar() {
+        val toolbar = binding.includeToolbar.toolbar
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            title = "Consultar Histórico"
+            setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
     private fun initializeRideAdapter() {
         rideAdapter = RideAdapter()
-        rideAdapter.addList(listRide)
         binding.rvRide.adapter = rideAdapter
         binding.rvRide.layoutManager = LinearLayoutManager(
             context, RecyclerView.VERTICAL, false
@@ -85,21 +72,68 @@ private lateinit var binding: FragmentRideHistoryBinding
     private fun initializeMotoristSpnerAdapter() {
 
 
-        sipnerAdapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, mockDrivers)
+        sipnerAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_spinner_dropdown_item, mockDrivers)
 
-        sipnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        sipnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerMotorist.adapter = sipnerAdapter
 
     }
 
-    fun initializeListeners(){
+    private fun initializeListeners(){
         binding.btnFilter.setOnClickListener{
-            testSpinner()
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > 1500) {
+                lastClickTime = currentTime
+                val isValid = binding.textInputLayout.isValid("Este campo não pode estar vazio")
+
+                if (isValid) {
+                    filterRide()
+                }
+            }
+
+        }
+
+        binding.includeToolbar.toolbar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.homeFragment)
         }
     }
-    fun testSpinner(){
-        val selectedItemPosition = binding.spinnerMotorist.selectedItemPosition
-        Toast.makeText(requireContext(), mockDrivers[selectedItemPosition]+"Posicao selecionada $selectedItemPosition", Toast.LENGTH_SHORT).show()
+
+    private fun filterRide() {
+        loadingAlert = LoadingAlert(requireContext())
+        errorAlert = ErrorAlert(requireContext())
+        val id = binding.editIdUser.text.toString()
+        val selectedItemPosition = binding.spinnerMotorist.selectedItemPosition.toString()
+
+
+        rideHistoryViewModel.getRideHistory(id, selectedItemPosition) { uiStatus ->
+            when (uiStatus) {
+                is UIStatus.Loading -> {
+                    loadingAlert.show("Histórico de Viagens")
+                }
+
+                is UIStatus.Success -> {
+                    val rideHistory = uiStatus.data
+                    if(rideHistory.isEmpty()){
+                        binding.textTitle.visibility = View.GONE
+                    }else{
+                        binding.textTitle.visibility = View.VISIBLE
+                    }
+                    rideAdapter.addList(rideHistory)
+                    loadingAlert.close()
+                }
+
+                is UIStatus.Error -> {
+                    rideAdapter.addList(emptyList())
+                    binding.textTitle.visibility = View.GONE
+                    loadingAlert.close()
+                    errorAlert.show("Erro", uiStatus.errorMessage)
+
+                }
+
+
+            }
+
+        }
     }
 
 

@@ -39,5 +39,9 @@
         android:id="@+id/rideHistoryFragment"
         android:name="br.com.jrmantovani.rideexpress.presantation.ui.fragments.RideHistoryFragment"
         android:label="fragment_ride_history"
-        tools:layout="@layout/fragment_ride_history" />
+        tools:layout="@layout/fragment_ride_history" >
+        <action
+            android:id="@+id/action_rideHistoryFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>
