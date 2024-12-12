@@ -1,10 +1,12 @@
 package br.com.jrmantovani.rideexpress.data.repository
 
-import android.util.Log
+
 import br.com.jrmantovani.rideexpress.core.UIStatus
 import br.com.jrmantovani.rideexpress.data.remote.api.RideAPI
 import br.com.jrmantovani.rideexpress.data.remote.dto.ErrorResponse
+import br.com.jrmantovani.rideexpress.data.remote.dto.RideConfirmResponse
 import br.com.jrmantovani.rideexpress.data.remote.dto.rideestimate.toRideEstimate
+import br.com.jrmantovani.rideexpress.data.remote.model.RideConfirmRequest
 import br.com.jrmantovani.rideexpress.data.remote.model.RideEstimateRequest
 import br.com.jrmantovani.rideexpress.domain.model.RideEstimate
 import br.com.jrmantovani.rideexpress.domain.repository.IRideRepository
@@ -21,7 +23,7 @@ class RideRepositoryImpl @Inject constructor(
         uiStatus: (UIStatus<RideEstimate>) -> Unit
     ) {
 
-        val response = rideApi.rediEstimate(rideEstimateRequest)
+        val response = rideApi.rideEstimate(rideEstimateRequest)
 
         if (response.isSuccessful) {
 
@@ -57,6 +59,34 @@ class RideRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun rideConfirm(
+        rideConfirmRequest: RideConfirmRequest,
+        uiStatus: (UIStatus<RideConfirmResponse>) -> Unit,
+    ) {
+       val response = rideApi.rideConfirm(rideConfirmRequest)
+        if (response.isSuccessful) {
+            val rideConfirmResponse = response.body()
+            if (rideConfirmResponse != null) {
+                uiStatus.invoke(UIStatus.Success(rideConfirmResponse))
+            } else {
+                uiStatus.invoke(UIStatus.Error("Erro ao converter dados"))
+            }
+
+        }else{
+            val errorBody = response.errorBody()?.string()
+            val errorResponse = try {
+                Gson().fromJson(errorBody, ErrorResponse::class.java)
+            } catch (e: Exception) {
+                null
+            }
+
+            uiStatus.invoke( UIStatus.Error("${errorResponse?.errorDescription}"))
+
+        }
+
+
+
+    }
 
 
 }

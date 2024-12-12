@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import br.com.jrmantovani.rideexpress.databinding.ItemRvMotoristBinding
 import br.com.jrmantovani.rideexpress.domain.model.Motorist
 
-class MotoristAdapter(): RecyclerView.Adapter<MotoristAdapter.MotoristViewHolder>() {
+class MotoristAdapter(
+    val onClick: (Motorist) -> Unit
+): RecyclerView.Adapter<MotoristAdapter.MotoristViewHolder>() {
 
     private var listMotorist = emptyList<Motorist>()
     fun addList( list: List<Motorist>){
@@ -27,6 +29,10 @@ class MotoristAdapter(): RecyclerView.Adapter<MotoristAdapter.MotoristViewHolder
             binding.textVehicle.text = motorist.vehicle
             binding.textValue.text = motorist.value.toString()
             binding.rating.rating = motorist.rating.toFloat()
+
+            binding.btnChoice.setOnClickListener {
+                onClick(motorist)
+            }
 
         }
     }

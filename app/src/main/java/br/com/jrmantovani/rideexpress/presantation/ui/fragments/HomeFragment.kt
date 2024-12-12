@@ -47,12 +47,13 @@ class HomeFragment : Fragment() {
     private fun rideEstimate(){
        loadingAlert = LoadingAlert(requireContext())
         errorAlert = ErrorAlert(requireContext())
-
+           val id = binding.editIdUser.text.toString()
             val origin = binding.editOrigin.text.toString()
            val destination = binding.editDestination.text.toString()
 
+
         val  rideEstimateRequest = RideEstimateRequest(
-            customerId = binding.editIdUser.text.toString(),
+            customerId = id,
             origin = origin,
             destination = destination
 
@@ -70,7 +71,8 @@ class HomeFragment : Fragment() {
 
 
 
-                  navController.navigate( HomeFragmentDirections.actionHomeFragmentToRideOptionsFragment(rideEstimate, origin, destination ))
+                  navController.navigate(
+                      HomeFragmentDirections.actionHomeFragmentToRideOptionsFragment(rideEstimate, origin, destination, id))
                     loadingAlert.close()
 
                  }
