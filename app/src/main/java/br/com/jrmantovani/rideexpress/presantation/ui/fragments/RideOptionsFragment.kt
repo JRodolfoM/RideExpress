@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.com.jrmantovani.rideexpress.BuildConfig
 import br.com.jrmantovani.rideexpress.R
 import br.com.jrmantovani.rideexpress.core.ErrorAlert
 import br.com.jrmantovani.rideexpress.core.LoadingAlert
@@ -19,6 +20,7 @@ import br.com.jrmantovani.rideexpress.data.remote.model.Driver
 import br.com.jrmantovani.rideexpress.data.remote.model.RideConfirmRequest
 import br.com.jrmantovani.rideexpress.databinding.FragmentRideOptionsBinding
 import br.com.jrmantovani.rideexpress.presantation.ui.adapter.MotoristAdapter
+import br.com.jrmantovani.rideexpress.presantation.viewmodel.MapViewModel
 import br.com.jrmantovani.rideexpress.presantation.viewmodel.RideConfirmViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -40,7 +42,8 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var errorAlert: ErrorAlert
     private val rideOptionsFragmentArgs: RideOptionsFragmentArgs by navArgs()
     private val rideConfirmViewModel: RideConfirmViewModel by viewModels()
-
+    private val mapViewModel: MapViewModel by viewModels()
+    private lateinit var googleMap: GoogleMap
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -54,6 +57,23 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
         initializeMap()
         initializeMotoristAdapter()
         initializeListeners()
+        initializeObservers()
+    }
+    private fun  initializeObservers() {
+        mapViewModel.routeLiveData.observe(viewLifecycleOwner) { route ->
+            if (route != null) {
+                drawRoute(route)
+            }
+        }
+    }
+
+    private fun drawRoute( route: List<LatLng>) {
+        googleMap.addPolyline(
+            PolylineOptions()
+                .addAll(route)
+                .color(0xFF0000FF.toInt())
+                .width(8f)
+        )
     }
 
     private fun initializeListeners() {
@@ -132,10 +152,13 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
         drawRoute(googleMap)
+
     }
 
     private fun drawRoute(googleMap: GoogleMap) {
+
         val boundsBuilder = LatLngBounds.Builder()
         val rideEstimate = rideOptionsFragmentArgs.rideEstimate
        val places = arrayListOf(
@@ -154,17 +177,18 @@ class RideOptionsFragment : Fragment(), OnMapReadyCallback {
         }
 
 
-        val polylineOptions = PolylineOptions()
-            .addAll(places.map { it.latLng })
-            .color(0xFF0000FF.toInt())
-            .width(5f)
-        googleMap.addPolyline(polylineOptions)
-
-
         val bounds = boundsBuilder.build()
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
-    }
 
+        val origin = "${rideEstimate.latitudeOrigin},${rideEstimate.longitudeOrigin}"
+        val destination = "${rideEstimate.latitudeDestination},${rideEstimate.longitudeDestination}"
+
+        val apiKey =  BuildConfig.MAPS_API_KEY
+
+
+        mapViewModel.fetchRoute(origin, destination, apiKey)
+
+    }
 
 }
 

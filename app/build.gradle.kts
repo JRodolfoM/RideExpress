@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,6 +12,17 @@ plugins {
 
 
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+// Obtenha a chave da API do Google Maps
+val mapsApiKey: String? = localProperties.getProperty("MAPS_API_KEY")
+
 
 android {
     namespace = "br.com.jrmantovani.rideexpress"
@@ -23,7 +37,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
     }
 
 
@@ -35,6 +49,8 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -48,11 +64,18 @@ android {
         viewBinding = true
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+
 }
 
 dependencies {
   //map
     implementation(libs.play.services.maps)
+    implementation (libs.google.android.maps.utils)
+
 
     //Hilt
     implementation(libs.hilt.android)

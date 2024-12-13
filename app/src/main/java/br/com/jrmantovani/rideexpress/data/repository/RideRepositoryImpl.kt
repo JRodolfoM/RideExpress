@@ -6,7 +6,6 @@ import br.com.jrmantovani.rideexpress.data.remote.api.RideAPI
 import br.com.jrmantovani.rideexpress.data.remote.dto.ErrorResponse
 import br.com.jrmantovani.rideexpress.data.remote.dto.RideConfirmResponse
 import br.com.jrmantovani.rideexpress.data.remote.dto.rideestimate.toRideEstimate
-import br.com.jrmantovani.rideexpress.data.remote.dto.ridehistory.RideHistoryDTO
 import br.com.jrmantovani.rideexpress.data.remote.model.RideConfirmRequest
 import br.com.jrmantovani.rideexpress.data.remote.model.RideEstimateRequest
 import br.com.jrmantovani.rideexpress.domain.model.RideEstimate

@@ -1,10 +1,10 @@
 package br.com.jrmantovani.rideexpress.presantation.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import br.com.jrmantovani.rideexpress.core.ErrorAlert
@@ -36,46 +36,46 @@ class HomeFragment : Fragment() {
     }
 
     private fun initializeListeners() {
-       binding.btnRideEstimate.setOnClickListener {
-           val currentTime = System.currentTimeMillis()
-           if (currentTime - lastClickTime > 1500) {
-               lastClickTime = currentTime
-               val isFieldIDValid = binding.textInputLayoutID.isValid("Informe o id do usuário")
-               val isFieldOriginValid = binding.textInputLayoutOrigin.isValid("Informe o endereço de origem")
-               val isFieldDestinationValid = binding.textInputLayoutDestination.isValid("Informe o endereço de destino")
+        binding.btnRideEstimate.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > 1500) {
+                lastClickTime = currentTime
+                val isFieldIDValid = binding.textInputLayoutID.isValid("Informe o id do usuário")
+                val isFieldOriginValid =
+                    binding.textInputLayoutOrigin.isValid("Informe o endereço de origem")
+                val isFieldDestinationValid =
+                    binding.textInputLayoutDestination.isValid("Informe o endereço de destino")
 
-               if (isFieldIDValid && isFieldOriginValid && isFieldDestinationValid) {
-                   rideEstimate()
-               }
+                if (isFieldIDValid && isFieldOriginValid && isFieldDestinationValid) {
+                    rideEstimate()
+                }
 
 
-           }
-       }
+            }
+        }
     }
 
-    private fun rideEstimate(){
-       loadingAlert = LoadingAlert(requireContext())
+    private fun rideEstimate() {
+        loadingAlert = LoadingAlert(requireContext())
         errorAlert = ErrorAlert(requireContext())
-           val id = binding.editIdUser.text.toString()
-            val origin = binding.editOrigin.text.toString()
-           val destination = binding.editDestination.text.toString()
+        val id = binding.editIdUser.text.toString()
+        val origin = binding.editOrigin.text.toString()
+        val destination = binding.editDestination.text.toString()
 
-//        val id = "1"
-//        val origin ="Av. Thomas Edison, 365 - Barra Funda, São Paulo - SP, 01140-000"
-//        val destination = "Av. Paulista, 1538 - Bela Vista, São Paulo - SP, 01310-200"
 
-        val  rideEstimateRequest = RideEstimateRequest(
+        val rideEstimateRequest = RideEstimateRequest(
             customerId = id,
             origin = origin,
             destination = destination
 
         )
-        rideEstimateViewModel.getRideEstimate( rideEstimateRequest ){ status->
-            when(status){
-                is UIStatus.Loading->{
+        rideEstimateViewModel.getRideEstimate(rideEstimateRequest) { status ->
+            when (status) {
+                is UIStatus.Loading -> {
                     loadingAlert.show("Estimativa de viagem")
                 }
-                is UIStatus.Success->{
+
+                is UIStatus.Success -> {
 
                     val rideEstimate = status.data
                     val navController = findNavController()
@@ -83,12 +83,19 @@ class HomeFragment : Fragment() {
 
 
 
-                  navController.navigate(
-                      HomeFragmentDirections.actionHomeFragmentToRideOptionsFragment(rideEstimate, origin, destination, id))
+                    navController.navigate(
+                        HomeFragmentDirections.actionHomeFragmentToRideOptionsFragment(
+                            rideEstimate,
+                            origin,
+                            destination,
+                            id
+                        )
+                    )
                     loadingAlert.close()
 
-                 }
-                is UIStatus.Error ->{
+                }
+
+                is UIStatus.Error -> {
                     loadingAlert.close()
 
                     errorAlert.show("Erro", status.errorMessage)
@@ -99,9 +106,6 @@ class HomeFragment : Fragment() {
         }
 
     }
-
-
-
 
 
 }
